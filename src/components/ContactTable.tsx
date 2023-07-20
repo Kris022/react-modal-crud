@@ -4,12 +4,14 @@ import { Contact } from "../types/Contact";
 
 import TableRow from "./TableRow";
 import ContactFormModal from "./ContactFormModal";
+import SearchBar from "./SearchBar";
 
 const ContactTable = () => {
   const [dataIndex, setDataIndex] = useState<number>(-1);
   const [visible, setVisible] = useState<boolean>(false);
 
   const [contactsData, setContactsData] = useState<Contact[]>([]);
+  const [filteredContacts, setFilteredContacts] = useState<Contact[]>([]);
 
   useEffect(() => {
     // Fetch contact data when the component is first rendered
@@ -23,6 +25,7 @@ const ContactTable = () => {
 
     if (res.ok) {
       setContactsData(json);
+      setFilteredContacts(contactsData);
     }
   };
 
@@ -35,6 +38,10 @@ const ContactTable = () => {
     });
 
     const json = await res.json();
+
+    if (!res.ok) {
+      console.log(json);
+    }
 
     if (res.ok) {
       fetchConactData();
@@ -88,59 +95,85 @@ const ContactTable = () => {
     setDataIndex(-1);
   };
 
-  // need a function to open modal that takes data to be in the form
+  const handleSearch = async (searchTerm: string) => {
+    if (searchTerm.trim() != "") {
+      const res = await fetch(
+        "http://localhost:4000/api/contacts/search?q=" + searchTerm
+      );
+      const json = await res.json();
+
+      if (res.ok) {
+        console.log(json);
+        const filteredContacts = contactsData.filter(
+          (contact) =>
+            contact.firstName
+              .toLowerCase()
+              .includes(searchTerm.toLowerCase()) ||
+            contact.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            contact.email.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+
+        setContactsData(filteredContacts);
+      }
+    } else {
+      fetchConactData();
+    }
+  };
 
   return (
-    <div className="card bg-dark text-white">
-      {/* Table header */}
-      <div className="card-header d-flex justify-content-between">
-        <h4>Manage Contacts</h4>
+    <>
+      <SearchBar onSearch={handleSearch} />
+      <div className="card bg-dark text-white">
+        {/* Table header */}
+        <div className="card-header d-flex justify-content-between">
+          <h4>Manage Contacts</h4>
 
-        <button
-          type="button"
-          className="btn btn-success"
-          onClick={() => setVisible(true)}
-        >
-          Add Contact
-        </button>
+          <button
+            type="button"
+            className="btn btn-success"
+            onClick={() => setVisible(true)}
+          >
+            Add Contact
+          </button>
+        </div>
+
+        {/* Table */}
+        <table className="table table-striped">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Email</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {contactsData.map((contact, index) => (
+              <TableRow
+                key={contact.id}
+                contact={contact}
+                tableIndex={index + 1}
+                onDelete={deleteContactData}
+                onUpdate={() => {
+                  setDataIndex(index);
+                  setVisible(true);
+                }}
+              />
+            ))}
+          </tbody>
+        </table>
+
+        {/* modal form */}
+        <ContactFormModal
+          visible={visible}
+          onCloseModal={closeFormModal}
+          contactsData={contactsData}
+          selectedContactIndex={dataIndex}
+          onSubmitData={updateContactData}
+        />
       </div>
-
-      {/* Table */}
-      <table className="table table-striped">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Email</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {contactsData.map((contact, index) => (
-            <TableRow
-              key={contact.id}
-              contact={contact}
-              tableIndex={index + 1}
-              onDelete={deleteContactData}
-              onUpdate={() => {
-                setDataIndex(index);
-                setVisible(true);
-              }}
-            />
-          ))}
-        </tbody>
-      </table>
-
-      {/* modal form */}
-      <ContactFormModal
-        visible={visible}
-        onCloseModal={closeFormModal}
-        contactsData={contactsData}
-        selectedContactIndex={dataIndex}
-        onSubmitData={updateContactData}
-      />
-    </div>
+    </>
   );
 };
 
