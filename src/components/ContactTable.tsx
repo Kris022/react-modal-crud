@@ -95,6 +95,8 @@ const ContactTable = () => {
     setDataIndex(-1);
   };
 
+  // error the when you type something but then backspace
+  // table is not rerendered properly
   const handleSearch = async (searchTerm: string) => {
     if (searchTerm.trim() != "") {
       const res = await fetch(
@@ -103,17 +105,7 @@ const ContactTable = () => {
       const json = await res.json();
 
       if (res.ok) {
-        console.log(json);
-        const filteredContacts = contactsData.filter(
-          (contact) =>
-            contact.firstName
-              .toLowerCase()
-              .includes(searchTerm.toLowerCase()) ||
-            contact.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            contact.email.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-
-        setContactsData(filteredContacts);
+        setContactsData(json);
       }
     } else {
       fetchConactData();
