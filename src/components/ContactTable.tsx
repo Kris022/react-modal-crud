@@ -35,6 +35,10 @@ const ContactTable = () => {
     });
 
     const json = await res.json();
+
+    if (res.ok) {
+      fetchConactData();
+    }
   };
 
   // Update contact
@@ -51,6 +55,9 @@ const ContactTable = () => {
         }
       );
       const json = res.json();
+      if (res.ok) {
+        fetchConactData();
+      }
     }
     // Add
     else {
@@ -59,7 +66,6 @@ const ContactTable = () => {
     }
 
     // will be placed diff when doing validations
-    fetchConactData();
     closeFormModal();
   };
 

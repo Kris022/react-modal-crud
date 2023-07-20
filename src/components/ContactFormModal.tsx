@@ -30,12 +30,14 @@ const ContactFormModal = ({
     email: "",
   };
 
+  // Data in the form input fields
   const [formData, setFormData] = useState<Contact>(newContact);
 
+  // Stores errors 
   const [formErrors, setFormErrors] = useState<FormErrors>({});
 
   useEffect(() => {
-    setFormErrors({});
+    setFormErrors({}); // Reset form errors when the form is opened
 
     // If not valid index of the contact array
     if (selectedContactIndex != -1) {
@@ -95,6 +97,7 @@ const ContactFormModal = ({
           <div className="modal-body">
             <form className="bg-light p-3 rounded">
               <div className="form-group">
+
                 <label>First Name</label>
                 <input
                   className="form-control"
@@ -111,6 +114,7 @@ const ContactFormModal = ({
                   </div>
                 )}
               </div>
+
               <div className="form-group">
                 <label>Last Name</label>
                 <input
@@ -127,6 +131,7 @@ const ContactFormModal = ({
                   </div>
                 )}
               </div>
+
               <div className="form-group mb-3">
                 <label>Email Address</label>
                 <input
@@ -143,6 +148,7 @@ const ContactFormModal = ({
                   </div>
                 )}
               </div>
+
               <div className="text-center">
                 <button
                   type="submit"
@@ -157,6 +163,7 @@ const ContactFormModal = ({
                   Submit
                 </button>
               </div>
+              
             </form>
           </div>
 
