@@ -16,6 +16,7 @@ const SearchBar = ({ onSearch }: SearchBarProps) => {
   return (
     <div>
       <input
+      className=""
         type="text"
         placeholder="Search..."
         onChange={handleSearch}

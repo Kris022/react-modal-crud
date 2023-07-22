@@ -5,13 +5,13 @@ import { Contact } from "../types/Contact";
 import TableRow from "./TableRow";
 import ContactFormModal from "./ContactFormModal";
 import SearchBar from "./SearchBar";
+import SortArrow from "./SortArrow";
 
 const ContactTable = () => {
   const [dataIndex, setDataIndex] = useState<number>(-1);
   const [visible, setVisible] = useState<boolean>(false);
 
   const [contactsData, setContactsData] = useState<Contact[]>([]);
-  const [filteredContacts, setFilteredContacts] = useState<Contact[]>([]);
 
   useEffect(() => {
     // Fetch contact data when the component is first rendered
@@ -25,7 +25,6 @@ const ContactTable = () => {
 
     if (res.ok) {
       setContactsData(json);
-      setFilteredContacts(contactsData);
     }
   };
 
@@ -90,6 +89,18 @@ const ContactTable = () => {
     }
   };
 
+  // Fetch contacts in order
+  const sortContacts = async (sortBy: string, sortOrder: string) => {
+    const res = await fetch(
+      `http://localhost:4000/api/contacts/sort?sortBy=${sortBy}&sortOrder=${sortOrder}`
+    );
+    const json = await res.json();
+
+    if (res.ok) {
+      setContactsData(json);
+    }
+  };
+
   const closeFormModal = () => {
     setVisible(false);
     setDataIndex(-1);
@@ -131,12 +142,21 @@ const ContactTable = () => {
 
         {/* Table */}
         <table className="table table-striped">
+          {/* Table Head */}
           <thead>
             <tr>
               <th>#</th>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Email</th>
+              <th>
+                First Name
+                <SortArrow sortField="firstName" onSort={sortContacts} />
+              </th>
+              <th>
+                Last Name
+                <SortArrow sortField="lastName" onSort={sortContacts} />
+              </th>
+              <th>Email
+              <SortArrow sortField="email" onSort={sortContacts} />
+              </th>
               <th>Actions</th>
             </tr>
           </thead>
