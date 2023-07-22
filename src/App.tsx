@@ -1,13 +1,18 @@
-import ContactTable from "./components/ContactTable";
-import "./Button.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import ManageContactsPage from "./pages/ManageContactsPage";
+import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
 
 function App() {
   return (
-    <div className="full-container">
-      <div className="container">
-        <ContactTable />
-      </div>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<ManageContactsPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

@@ -84,7 +84,7 @@ const ContactFormModal = ({
         <div className="modal-content">
           {/* Modal header */}
           <div className="modal-header">
-            <h5 className="modal-title">Modal Title</h5>
+            <h5 className="modal-title">{selectedContactIndex === -1 ? "Add Contact" : "Update Contact"}</h5>
             <button
               type="button"
               className="btn-close"
